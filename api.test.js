@@ -1,5 +1,20 @@
 describe('Login API', () => {
+  beforeEach(() => {
+    global.fetch = jest.fn();
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   it('should return token for valid credentials', async () => {
+    const expectedResponse = { token: 'fake-token' };
+
+    global.fetch.mockResolvedValueOnce({
+      status: 200,
+      json: jest.fn().mockResolvedValue(expectedResponse),
+    });
+
     const res = await fetch('https://reqres.in/api/login', {
       method: 'POST',
       headers: {
@@ -15,5 +30,6 @@ describe('Login API', () => {
 
     expect(res.status).toBe(200);
     expect(data).toHaveProperty('token');
+    expect(data.token).toBe('fake-token');
   });
 });
